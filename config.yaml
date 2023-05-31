@@ -8,7 +8,7 @@ proxies:
 proxy-providers:
   myproxy1:
     type: http                                                                                                       #配置链接后面加上&flag=clash
-    url: https://xn--4gq62f52gdss.com/api/v1/client/subscribe?token=bf35f3b350c7f4b598c08b656984668c&flag=clash#粘贴 Proxy Provider Converter 提供的链接
+    url: &flag=clash#粘贴 Proxy Provider Converter 提供的链接
     interval: 172800
     path: ./proxy_providers/myproxy.yaml
     health-check:
