@@ -1,0 +1,64 @@
+mixed-port: 7890
+allow-lan: true
+mode: rule
+log-level: info
+ipv6: false
+
+proxies:
+proxy-providers:
+  myproxy1:
+    type: http                                                                                                       #配置链接后面加上&flag=clash
+    url: https://xn--4gq62f52gdss.com/api/v1/client/subscribe?token=bf35f3b350c7f4b598c08b656984668c&flag=clash#粘贴 Proxy Provider Converter 提供的链接
+    interval: 172800
+    path: ./proxy_providers/myproxy.yaml
+    health-check:
+      enable: true
+      interval: 6000
+      lazy: true
+      url: http://www.gstatic.com/generate_204
+    filter: 专线
+    
+proxy-groups:
+      
+  - name: 节点选择
+    type: select
+    proxies:
+      - auto 
+    use:
+      - myproxy1
+      
+  - name: "auto"
+    type: url-test
+    url: 'http://www.gstatic.com/generate_204'
+    tolerance: 600
+    
+    interval: 3600
+    use:
+      - myproxy1
+      
+rule-providers:      
+  direct:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 172800
+    
+    
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+    interval: 172800
+   
+    
+rules:
+  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
+  - DOMAIN,services.googleapis.cn,节点选择
+  - GEOIP,CN,DIRECT
+  - RULE-SET,direct,DIRECT  
+  - GEOIP,!CN,节点选择
+  - RULE-SET,proxy,节点选择
+  - MATCH,节点选择
+    
